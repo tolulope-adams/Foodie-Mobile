@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:foodie/login.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({super.key});
@@ -47,7 +48,7 @@ class _SignUpFormState extends State<SignUpForm>{
           ),
           TextButton(
               onPressed: (){
-                login(emailTextController.text, passwordTextController.text);
+                signup(emailTextController.text, passwordTextController.text);
               },
               child: const Text("Login")
           )
@@ -55,9 +56,16 @@ class _SignUpFormState extends State<SignUpForm>{
     );
   }
 
-  void login(String email, String password) {
+  void signup(String email, String password) {
+    FirebaseAuth.instance
+        .authStateChanges()
+        .listen((user) {
+          if(user != null){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginForm()));
+          }
+        });
     try {
-      FirebaseAuth.instance.signInWithEmailAndPassword(
+      FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
           password: password
       );
